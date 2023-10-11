@@ -1,3 +1,4 @@
+// Arreglo de canciones con nombres y tiempos de duración
 const canciones = [
   { nombre: 'Uptown Funk', tiempo: 270 },
   { nombre: 'Shape of You', tiempo: 233 },
@@ -11,13 +12,21 @@ const canciones = [
   { nombre: 'Havana', tiempo: 217 }
 ];
 
-let indiceMostrado = -1;
-let temporizador;
+// Lista para mantener el historial de reproducción
 let historial = [];
 
+// Temporizador para contar el tiempo de reproducción
+let temporizador;
+
+// Variable para controlar si la reproducción está pausada
+let isPaused = false;
+
+// Obtiene elementos del DOM
 const cancionesLista = document.getElementById('canciones-lista');
+const historialLista = document.getElementById('historial-lista');
 const cancionEnReproduccion = document.getElementById('cancion-en-reproduccion');
 
+// Función para mostrar las canciones en la lista
 function mostrarCanciones() {
   cancionesLista.innerHTML = '';
 
@@ -26,66 +35,68 @@ function mostrarCanciones() {
     const elementoLista = document.createElement('li');
     elementoLista.classList.add('nombre-cancion');
     elementoLista.textContent = `▶ ${cancion.nombre}`;
-    elementoLista.addEventListener('click', () => reproducirCancion(i));
-    cancionesLista.appendChild(elementoLista);
-
+    elementoLista.addEventListener('click', () => reproducirCancion(i, canciones));
+    
+    // Agregar icono de bote de basura para eliminar la canción
     const iconoBasura = document.createElement('span');
     iconoBasura.innerHTML = '&#x1F5D1;';  // Unicode para un bote de basura
     iconoBasura.classList.add('boton-eliminar');
     iconoBasura.addEventListener('click', (event) => eliminarCancion(event, i));
     elementoLista.appendChild(iconoBasura);
+    
+    cancionesLista.appendChild(elementoLista);
   }
+
+  // Agregar botón para agregar nueva canción
+  const agregarButton = document.createElement('button');
+  agregarButton.textContent = 'Agregar nueva canción';
+  agregarButton.addEventListener('click', agregarNuevaCancion);
+  cancionesLista.appendChild(agregarButton);
 }
 
-function reproducirCancion(indice) {
-  // Restaurar la canción anterior al historial
-  if (indiceMostrado !== -1) {
-    historial.push(canciones[indiceMostrado]);
-  }
-
-  // Detener temporizador si hay uno en curso
-  if (temporizador) {
-    clearInterval(temporizador);
-  }
-
-  // Restaurar el estilo de la canción previamente reproducida
-  if (indiceMostrado !== -1) {
-    const cancionAnterior = cancionesLista.children[indiceMostrado];
-    cancionAnterior.classList.remove('escuchando');
-  }
-
-  // Resaltar la canción actual
-  const cancionActual = cancionesLista.children[indice];
-  cancionActual.classList.add('escuchando');
-
-  // Actualizar la canción en reproducción
-  cancionEnReproduccion.textContent = `EN REPRODUCCIÓN: ${canciones[indice].nombre}`;
-
-  // Empezar temporizador
-  let tiempoRestante = canciones[indice].tiempo;
-  const contadorTiempo = document.createElement('span');
-  cancionEnReproduccion.appendChild(contadorTiempo);
-
-  temporizador = setInterval(() => {
-    if (tiempoRestante <= 0) {
-      clearInterval(temporizador);
-      contadorTiempo.textContent = '';
-      mostrarSiguienteCancion();
-    } else {
-      contadorTiempo.textContent = ` - Tiempo restante: ${tiempoRestante}s`;
-      tiempoRestante--;
+// Función para agregar una nueva canción
+function agregarNuevaCancion() {
+  swal({
+    text: 'Ingresa el nombre de la canción:',
+    content: 'input',
+    button: {
+      text: 'Siguiente',
+      closeModal: false,
+    },
+  }).then((nombreCancion) => {
+    if (!nombreCancion) {
+      swal('Debes ingresar un nombre de canción.', '', 'warning');
+      return agregarNuevaCancion();
     }
-  }, 1000);
 
-  // Actualizar el índice mostrado
-  indiceMostrado = indice;
+    swal({
+      text: 'Ingresa la duración en segundos:',
+      content: 'input',
+      button: {
+        text: 'Agregar',
+        closeModal: false,
+      },
+    }).then((tiempoCancion) => {
+      if (!tiempoCancion || isNaN(tiempoCancion) || tiempoCancion < 0) {
+        swal('Debes ingresar un tiempo válido en segundos.', '', 'warning');
+        return agregarNuevaCancion();
+      }
+
+      const nuevaCancion = {
+        nombre: nombreCancion,
+        tiempo: parseInt(tiempoCancion),
+      };
+
+      // Agregar la nueva canción a la lista de reproducción
+      canciones.push(nuevaCancion);
+      mostrarCanciones();
+
+      swal('¡Canción agregada!', '', 'success');
+    });
+  });
 }
 
-function mostrarSiguienteCancion() {
-  const siguienteIndice = (indiceMostrado + 1) % canciones.length;
-  reproducirCancion(siguienteIndice);
-}
-
+// Función para eliminar una canción
 function eliminarCancion(event, indice) {
   event.stopPropagation();
 
@@ -105,69 +116,103 @@ function eliminarCancion(event, indice) {
   });
 }
 
-function agregarCancion() {
-  swal("Nueva canción", {
-    content: "input",
-    title: "Ingrese el nombre de la nueva canción:",
-    buttons: {
-      cancel: "Cancelar",
-      confirm: {
-        text: "Agregar",
-        closeModal: false,
-      },
-    },
-  }).then((value) => {
-    if (value === null || value.trim() === "") {
-      swal("Nombre inválido", "Por favor, ingrese un nombre válido.", "error");
-    } else {
-      const nuevoNombre = value;
-      swal("Nueva canción", {
-        content: "input",
-        title: "Ingrese la duración de la nueva canción en segundos:",
-        buttons: {
-          cancel: "Cancelar",
-          confirm: {
-            text: "Agregar",
-            closeModal: false,
-          },
-        },
-      }).then((value) => {
-        if (value === null || isNaN(parseInt(value))) {
-          swal("Duración inválida", "Por favor, ingrese una duración numérica para la canción.", "error");
-        } else {
-          const nuevoTiempo = parseInt(value, 10);
-          canciones.push({ nombre: nuevoNombre, tiempo: nuevoTiempo });
-          mostrarCanciones();
-          swal("Canción agregada", `La canción "${nuevoNombre}" ha sido agregada correctamente.`, "success");
-        }
-      });
-    }
-  });
-}
+// Función para pausar o reanudar la reproducción
+function togglePause() {
+  isPaused = !isPaused;
 
-function mostrarHistorial() {
-  let historyMessage = 'Historial de canciones:\n';
-  for (const song of historial) {
-    historyMessage += `${song.nombre} - Tiempo: ${song.tiempo}s\n`;
-  }
+  // Obtén el ícono de pausa y reanudación
+  const iconoPausa = document.getElementById('icono-pausa');
+  iconoPausa.innerHTML = isPaused ? '▶' : '⏸';  // Cambia el ícono según el estado de pausa
 
-  if (historial.length === 0) {
-    historyMessage += 'No hay canciones en el historial.';
-  }
-
-  alert(historyMessage);
-}
-
-function regresarCancion() {
-  if (historial.length > 0) {
-    const lastPlayedSong = historial.pop();
-    const lastPlayedIndex = canciones.findIndex(song => song.nombre === lastPlayedSong.nombre);
-    if (lastPlayedIndex !== -1) {
-      reproducirCancion(lastPlayedIndex);
-    }
+  if (isPaused) {
+    clearInterval(temporizador);
   } else {
-    swal('No hay canciones en el historial', '', 'info');
+    reproducir(canciones[historial.length - 1], true);
   }
 }
 
+// Función para reproducir una canción
+function reproducir(cancion, isResumed = false) {
+  if (!isResumed) {
+    clearInterval(temporizador);
+  }
+
+  let tiempoRestante = cancion.tiempo;
+  const contadorTiempo = document.createElement('span');
+
+  temporizador = setInterval(() => {
+    if (!isPaused) {
+      if (tiempoRestante <= 0) {
+        clearInterval(temporizador);
+        mostrarSiguienteCancion();
+      } else {
+        const minutos = Math.floor(tiempoRestante / 60).toString().padStart(2, '0');
+        const segundos = (tiempoRestante % 60).toString().padStart(2, '0');
+        contadorTiempo.textContent = ` - Tiempo restante: ${minutos}:${segundos}`;
+        tiempoRestante--;
+      }
+    }
+  }, 1000);
+
+  cancionEnReproduccion.textContent = `EN REPRODUCCIÓN: ${cancion.nombre}`;
+  cancionEnReproduccion.appendChild(contadorTiempo);
+}
+
+// Función para reproducir una canción específica
+function reproducirCancion(indice, lista) {
+  historial.push(lista.splice(indice, 1)[0]);
+  mostrarCanciones();
+  const cancionAnterior = cancionesLista.children[indice];
+  if (cancionAnterior) {
+    cancionAnterior.classList.remove('escuchando');
+  }
+  mostrarHistorial();
+  reproducir(historial[historial.length - 1]);
+}
+
+// Función para mostrar la siguiente canción
+function mostrarSiguienteCancion() {
+  if (historial.length > 0) {
+    const cancionSiguiente = historial.pop();
+    canciones.push(cancionSiguiente);
+    mostrarCanciones();
+    mostrarHistorial();
+    if (historial.length > 0) {
+      reproducir(historial[historial.length - 1]);
+    }
+  }
+}
+
+// Función para mostrar el historial de reproducción
+function mostrarHistorial() {
+  historialLista.innerHTML = '';
+
+  for (let i = 0; i < historial.length; i++) {
+    const cancion = historial[i];
+    const elementoLista = document.createElement('li');
+    elementoLista.classList.add('nombre-cancion');
+    elementoLista.textContent = `⏪ ${cancion.nombre}`;
+
+    const regresarButton = document.createElement('button');
+    regresarButton.textContent = 'Regresar';
+    regresarButton.addEventListener('click', () => regresarCancion(i));
+
+    elementoLista.appendChild(regresarButton);
+    historialLista.appendChild(elementoLista);
+  }
+}
+
+// Función para regresar una canción del historial a la lista de reproducción
+function regresarCancion(indice) {
+  if (historial.length > 0 && indice >= 0 && indice < historial.length) {
+    canciones.push(historial.splice(indice, 1)[0]);
+    mostrarCanciones();
+    mostrarHistorial();
+    if (!temporizador && historial.length > 0) {
+      reproducir(historial[historial.length - 1]);
+    }
+  }
+}
+
+// Mostrar las canciones al cargar la página
 mostrarCanciones();

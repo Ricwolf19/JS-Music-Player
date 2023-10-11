@@ -49,6 +49,7 @@ body {
 
 #cancion-en-reproduccion {
   cursor: pointer;
+  text-align: center;
 }
 
 #cancion-en-reproduccion:hover {
@@ -87,4 +88,75 @@ body {
 
 .history-section .regresar-button:hover {
   background-color: #d32f2f;
+}
+
+/* Estilo para el botón de crear canción */
+#crear-cancion-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#crear-cancion-button:hover {
+  background-color: #45a049;
+}
+
+/* Estilo para el botón de regresar */
+.regresar-button {
+  background-color: #3498db;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.regresar-button:hover {
+  background-color: #2980b9;
+}
+
+/* Estilo para el botón de eliminar */
+.boton-eliminar {
+  color: #e74c3c;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.boton-eliminar:hover {
+  color: #c0392b;
+}
+
+/* Estilo para la lista de canciones y elementos de la lista */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.playlist-section,
+.historial-section {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px 0;
+  width: 70%;
+}
+
+.playlist-section h2,
+.historial-section h2 {
+  margin-bottom: 10px;
+}
+
+.nombre-cancion {
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.nombre-cancion:hover {
+  text-decoration: underline;
 }
