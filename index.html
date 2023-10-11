@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reproductor de Música</title>
+  <link rel="shortcut icon" href="Favicon.jpg" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="playlist-section">
+      <h1 id="cancion-en-reproduccion" onclick="mostrarHistorial()">EN REPRODUCCIÓN:</h1>
+      <ul id="canciones-lista"></ul>
+      <button class="agregar-button" onclick="agregarCancion()">Agregar Canción</button>
+    </div>
+    <div class="history-section">
+      <h2>Historial</h2>
+      <ul id="historial-lista"></ul>
+      <button class="regresar-button" onclick="regresarCancion()">Regresar</button>
+    </div>
+  </div>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

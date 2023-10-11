@@ -1,0 +1,90 @@
+body {
+  font-family: 'Arial', sans-serif;
+}
+
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.agregar-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.agregar-button:hover {
+  background-color: #45a049;
+}
+
+.nombre-cancion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.nombre-cancion:hover {
+  background-color: #f0f0f0;
+}
+
+.boton-eliminar {
+  font-size: 24px;
+}
+
+.escuchando::before {
+  content: '▶'; /* Play icon */
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+#cancion-en-reproduccion {
+  cursor: pointer;
+}
+
+#cancion-en-reproduccion:hover {
+  color: #4CAF50;
+}
+
+.regresar-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.regresar-button:hover {
+  background-color: #d32f2f;
+}
+
+.history-section {
+  margin-top: 20px;
+}
+
+.history-section h2 {
+  margin-bottom: 10px;
+}
+
+.history-section .regresar-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.history-section .regresar-button:hover {
+  background-color: #d32f2f;
+}
